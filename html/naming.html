@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="./css/reset.css" rel="stylesheet">
+  <link href="./css/style.css" rel="stylesheet">
+  <title>ネーミングサポート</title>
+</head>
+<body>
+    <header>
+
+    </header>
+    <main>
+
+        <!-- <h1>ネーミング作成</h1> -->
+        <div>
+            <h2>ネーミングサポート</h2>
+            <div>
+                <label for="client">クライアント名：</label>
+                <input id="client" type="text" />
+            </div>
+            <div>
+                <label for="name">提案名：</label>
+                <input id="name" type="text" placeholder="SampleName" style="margin-right: 20px;"/>
+                <label for="yomi">読み方：</label>
+                <input id="yomi" type="text" placeholder="サンプルネーム"/>
+            </div>
+            <h4>使用する単語</h4>
+            <div style="margin:0 0 20px; padding: 10px; border: 2px solid #ccc; width: 35%;">
+                <table id="tbl">
+                    <!-- <thead>
+                        <tr>
+                            <td>単語</td>
+                            <td>意味</td>
+                        </tr>
+                    </thead> -->
+                    <tbody>
+                        <tr>
+                            <td><input id="word1" type="text" style="margin-right: 20px;"/></td>
+                            <td><input id="imi1" type="text"/></td>
+                        </tr>
+                        <tr>
+                            <td><input id="word2" type="text" style="margin-right: 20px;"/></td>
+                            <td><input id="imi2" type="text"/></td>
+                        </tr>
+                        <tr>
+                            <td><input id="word3" type="text" style="margin-right: 20px;"/></td>
+                            <td><input id="imi3" type="text"/></td>
+                        </tr>
+                        <tr>
+                            <td><input id="word4" type="text" style="margin-right: 20px;"/></td>
+                            <td><input id="imi4" type="text"/></td>
+                        </tr>
+                        <tr>
+                            <td><input id="word5" type="text" style="margin-right: 20px;"/></td>
+                            <td><input id="imi5" type="text"/></td>
+                        </tr>
+                        <tr>
+                            <td><input id="word6" type="text" style="margin-right: 20px;"/></td>
+                            <td><input id="imi6" type="text"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <!-- <button onclick="add()">単語追加</button>
+                <button onclick="del()">単語削除</button> -->
+            </div>
+            <div>
+                <h4>ネーミングイメージ</h4>
+                <!-- <label for="concept">ネーミングイメージ：</label> -->
+                <textarea id="concept"></textarea>
+            </div>
+
+            <div>
+                <fieldset style="margin: 20px 0;">
+                    <legend>特許情報</legend>
+                    <div style="display: flex;">
+                        <input type="radio" id="patentChoice1" name="patent" value="日本語表記・英語表記ともに同一名は見つかりませんでした。">
+                        <label for="patentChoice1">日本語表記・英語表記両方無し</label>
+
+                        <input type="radio" id="patentChoice2" name="patent" value="日本語表記で同一名は見つかりませんでした。">
+                        <label for="patentChoice2">日本語表記では同一名無し</label>
+
+                        <input type="radio" id="patentChoice3" name="patent" value="英語表記で同一名は見つかりませんでした。">
+                        <label for="patentChoice3">英語表記で同一名無し</label>
+                    </div>
+                </fieldset>
+                <fieldset style="margin: 20px 0;">
+                    <legend>ドメイン</legend>
+                    <div style="display:flex">
+                        <input type="radio" id="domainChoice1" name="domain" value="「.com」「.net」「.jp」などの主要なドメインが取得可能です。">
+                        <label for="domainChoice1">「.com」「.net」「.jp」</label>
+
+                        <input type="radio" id="domainChoice2" name="domain" value="「.com」以外の主要なドメインが取得可能です。">
+                        <label for="domainChoice2">「.com」以外</label>
+
+                        <input type="radio" id="domainChoice3" name="domain" value="「.net」以外の主要なドメインが取得可能です。">
+                        <label for="domainChoice3">「.net」以外</label>
+
+                        <input type="radio" id="domainChoice4" name="domain" value="「.jp」以外の主要なドメインが取得可能です。">
+                        <label for="domainChoice4">「.jp」以外</label>
+                    </div>
+                </fieldset>
+            </div>
+            <div>
+                <fieldset>
+                    <legend>リンク</legend>
+                    <div>
+                        <a href="https://www.j-platpat.inpit.go.jp/s0100" target="_blank">特許情報プラットフォーム</a><br>
+                        <a id="domain" href="" target="_blank">ドメイン検索</a>
+                    </div>
+                </fieldset>
+            </div>
+            <button onclick="print()" style="margin-top: 20px; margin-right: 20px;">表示</button>
+            <button onclick="reset()" style="margin-top: 20px;">リセット</button>
+            <!-- <button onclick="getTableData()">aaa</button>
+            <button onclick="printSuggestion()">test</button>
+            <button onclick="getPatenValue()">bbb</button> -->
+
+            <div style="width: 600px; height: 600px; border: 1px solid gray; margin-top: 20px;">
+                <span id="suggestion"></span>
+            </div>
+
+            <!-- <div style="width: 650px; height: 550px; border: solid 2px black; margin-top: 20px;">
+                <span id="viewField"></span>
+            </div> -->
+        </div>
+
+        <script>
+            let text = '';
+            let words = '';
+            let name = document.getElementById('name');
+            const yomi = document.getElementById("yomi");
+            let tbl = document.getElementById('tbl');
+            const namingImage = document.getElementById('concept');
+            // let data;
+            let domain = document.getElementById('domain');
+            let viewField = document.getElementById('viewField');
+            let suggestion = document.getElementById('suggestion');
+            // name.addEventListener('input', setHref);
+
+            // function setHref () {
+            //     domain.href = "https://muumuu-domain.com/domain/search?domain=" + name.value;
+            // }
+
+            function add() {
+                let tr = document.createElement("tr");
+    
+                for (let i=0; i<2; i++){
+                    let td = document.createElement("td");
+                    let inp = document.createElement("input");
+                    td.appendChild(inp);
+                    tr.appendChild(td);
+                }
+    
+                tbl.appendChild(tr);
+            }
+    
+            function del() {
+                let rw = tbl.rows.length;
+                tbl.deleteRow(rw-1);
+            }
+
+            function setTitle () {
+                addText(name.value + "（" + yomi.value + "）");
+                addText('------------------------------------------------------');
+            }
+
+            function setSuggestionName () {
+                addText(name.value + "（" + yomi.value + "）を提案致します。\n");
+            }
+            
+            function setSuggestionWords () {
+                addText("以下の単語からなる造語です。");
+                let data = getTableData();
+                for (i = 0; i < data.length; i++) {
+                    if (data[i][0] !== ''){
+                        addText("・" + data[i][0] + "：" + data[i][1] );
+                    }
+                }
+                addText("");
+            }
+
+            function setSuggestionNamingimage () {
+                addText("「"+namingImage.value+"」というイメージから名付けました。\n")
+            }
+
+            function getRadioValue (radioName) {
+                let elements = document.getElementsByName(radioName);
+                let len = elements.length;
+                let checkValue = '';
+
+                for (let i = 0; i < len; i++) {
+                    if (elements.item(i).checked) {
+                        checkValue = elements.item(i).value;
+                    }
+                }
+
+                return checkValue;
+            }
+
+            function getPatentValue () {
+                return getRadioValue('patent');
+            }
+
+            function getDomainValue () {
+                return getRadioValue('domain');
+            }
+
+            function setSuggestionPatentTemp () {
+                addText("特許情報プラットフォームで検索した結果、" + getPatentValue());
+            }
+
+            function setSuggestionDomainTemp () {
+                addText("「" + name.value + "」で" + getDomainValue());
+                addText("");
+            }
+
+            function setSuggestionClosingWords () {
+                addText("ご検討いただけましたら幸いです。");
+                addText("修正等ございましたらお申し付けください。")
+            }
+
+            function resetSuggestion () {
+                text = '';
+            }
+
+            function createSuggestion() {
+                resetSuggestion();
+                setTitle();
+                setSuggestionName();
+                setSuggestionWords();
+                setSuggestionNamingimage();
+                setSuggestionPatentTemp();
+                setSuggestionDomainTemp();
+                setSuggestionClosingWords();
+            }
+
+            function print() {
+                createSuggestion();
+                console.log(text);
+                suggestion.innerText= text;
+            }
+
+            function addText(addText) {
+                return text = text+addText+'\n';
+            }
+
+            function resetTable () {
+                let table = document.getElementById('tbl');
+                let tbl_tr = table.querySelectorAll('tr');
+
+                //テーブルの1行(trタグ)毎に処理
+                tbl_tr.forEach(function(tr){
+                    //tdタグのNodeListを取得
+                    let cells = tr.querySelectorAll('td');
+                    //テーブルのヘッダー部分は飛ばす
+                    if (cells.length!=0){
+                        // テーブルの1行(trタグ)のデータを格納する配列
+                        // let d =[];
+                        //セル(tdタグ)毎に処理
+                        cells.forEach(function(td){
+                            //セルがinputタグだった場合
+                            if(td.innerHTML.indexOf('input') != -1) {
+                                td.firstElementChild.value = '';
+                            }
+                            //セルがtextだった場合
+                            else if(td.textContent!=""){
+                                td.textContent = '';
+                            }
+                            //セルが空白だった場合
+                            else{
+                            }
+                        });
+                    }
+                });
+            }
+
+            function resetRadioValue () {
+                let patentElements = document.getElementsByName('patent');
+                let domainElements = document.getElementsByName('domain');
+                patentElements.item(0).checked = true;
+                domainElements.item(0).checked = true;
+            }
+
+            function reset () {
+                name.value = '';
+                yomi.value = '';
+                resetTable();
+                namingImage.value = '';
+                resetRadioValue();
+            }
+
+            function getTableData(){
+                // 抽出したデータを格納する配列
+                let data = [];
+                // idでhtmlからtableの要素を取得し、trタグのNodeListを取得
+                let table = document.getElementById('tbl');
+                let tbl_tr = table.querySelectorAll('tr');
+                //テーブルの1行(trタグ)毎に処理
+                tbl_tr.forEach(function(tr){
+                    //tdタグのNodeListを取得
+                    let cells = tr.querySelectorAll('td');
+                    //テーブルのヘッダー部分は飛ばす
+                    if (cells.length!=0){
+                        // テーブルの1行(trタグ)のデータを格納する配列
+                        let d =[];
+                        //セル(tdタグ)毎に処理
+                        cells.forEach(function(td){
+                            //セルがinputタグだった場合
+                            if(td.innerHTML.indexOf('input') != -1) {
+                                d.push(td.firstElementChild.value);
+                            }
+                            //セルがtextだった場合
+                            else if(td.textContent!=""){
+                                d.push(td.textContent);
+                            }
+                            //セルが空白だった場合
+                            else{
+                                d.push("");
+                            }
+                        });
+                        data.push(d);
+                    }
+                });
+                // console.log(data);
+                return data
+            }
+
+            function printSuggestion() {
+                createSuggestion();
+                // console.log(text);
+                // viewField.value = text;
+                // // console.log(viewField.value);
+                // console.log(viewField.innerText);
+            }
+
+
+    
+        </script>
+
+    </main>
+    <footer>
+
+    </footer>
+</body>
+</html>
